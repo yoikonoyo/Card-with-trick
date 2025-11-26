@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Card with trick</title>
+
+  <!--ファビコン-->
+<link rel="icon" type="image/svg" href="my-favicon.png">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
+  
+  <style>
+    :root{--bg:#fff3f8;--card:#ffffff;--accent:#ff69b4;--close-btn:#4CAF50;}
+    
+    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:linear-gradient(180deg,var(--bg),#fff);display:flex;align-items:center;justify-content:center}
+    .wrap{width:94%;max-width:760px}
+    .card{background:var(--card);border-radius:18px;box-shadow:0 10px 30px rgba(10,10,20,0.08);overflow:hidden;padding:28px}
+    .cover{display:block;text-align:center;} 
+    
+    .title{
+      font-size:1.6rem;
+      font-weight:700;
+      color:var(--accent); 
+      font-family: 'Sawarabi Mincho', serif; 
+    }
+    
+    .subtitle{font-size:0.95rem;color:#666;margin-top:6px}
+
+    .btn-wrap{ 
+      text-align: center;
+      margin-top: 15px; 
+    }
+
+    .btn{
+      margin: 5px; 
+      color:#fff;
+      border:none;
+      padding:8px 12px; 
+      border-radius:8px; 
+      font-weight:700;
+      cursor:pointer;
+      font-size: 0.9rem; 
+    }
+    
+    #revealBtn{
+        background: var(--accent); 
+    }
+
+    #closeBtn{
+        background: var(--close-btn); 
+        padding: 5px 10px; 
+        font-size: 0.85rem; 
+    }
+
+    .image-wrap{margin-top:18px;border-radius:12px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center;height:360px}
+    .image-wrap img{max-width:100%;max-height:100%;display:block}
+
+    .blur{filter:blur(10px);transition:filter .6s ease}
+    .hidden{display:none}
+
+    .lock-panel{margin-top:14px;display:flex;gap:8px;align-items:center}
+    .code{padding:8px;border-radius:8px;border:1px solid #ddd;font-size:0.9rem;} 
+    .help{font-size:0.86rem;color:#888;margin-top:8px}
+
+    .message{margin-top:14px;font-size:1.05rem;color:#333}
+
+    /* confetti simple */
+    .confetti{pointer-events:none;position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden;z-index:999}
+    .confetti i{position:absolute;display:block;width:12px;height:18px;opacity:0;transform-origin:center;
+      /* 💡 修正点1: アニメーション時間を長くして、画面下端を超えて落ちるようにする */
+      animation:fall 5s linear forwards} 
+    
+    @keyframes fall{
+      0%{transform:translateY(-20vh) rotate(0) scale(1);opacity:1}
+      /* 💡 修正点2: 終了位置をより下 (200vh) に設定する */
+      100%{transform:translateY(200vh) rotate(720deg) scale(.9);opacity:1}
+    }
+
+    footer{margin-top:16px;font-size:0.82rem;color:#666;text-align:right}
+
+    @media (max-width:480px){.image-wrap{height:260px}.title{font-size:1.2rem}}
+    
+    /* ★★★画像サイズをここで変更★★★ */
+    .image-wrap video{
+     width: 85%;
+     height: 110%;
+     object-fit: cover;  
+     display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="cover">
+        <div>
+          <div class="title">君は自由だ！</div>
+          <div class="subtitle">君が笑えば、世界は君とともに笑う⭐</div>
+        </div>
+      </div>
+
+      <div class="image-wrap" id="imageWrap">
+        <video id="scanned" class="blur" autoplay loop muted playsinline>
+          <!-- ★★★ここを変える★★★ -->
+  <source src="okamoto.mp4" type="video/mp4">
+</video>
+      </div>
+
+      
+      <div id="messageArea" class="message hidden">
+        <strong>From：</strong> 大浜🎉<br>
+      </div>
+
+      <div class="lock-panel">
+        <input id="codeInput" class="code" type="password" placeholder="passcodeを入力" />
+        <button class="btn" id="revealBtn">Open！</button>
+      </div>
+
+      <div class="help">passcode：メールで4桁の数字をお送りしています。それを半角数字で入れてください。（例）1226</div>
+      
+      <footer>※passcodeを入力してもケーキやプレゼントは飛び出しません…😊<br>passcodeの有効期限は2週間です。</footer>
+      
+      <div class="btn-wrap">
+        <button class="btn" id="closeBtn">もう一度隠す</button>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    const PASSCODE = '1226'; // 
+    
+    // ====== LOGIC ======
+    const closeBtn = document.getElementById('closeBtn');
+    const revealBtn = document.getElementById('revealBtn');
+    const codeInput = document.getElementById('codeInput');
+    const scanned = document.getElementById('scanned');
+    const messageArea = document.getElementById('messageArea');
+    const confettiRoot = document.getElementById('confetti');
+
+    function makeConfetti(){
+      confettiRoot.innerHTML = '';
+      const colors = ['#ff6b6b','#ffd166','#06d6a0','#4d96ff','#c77dff'];
+      for(let i=0;i<28;i++){
+        const el = document.createElement('i');
+        el.style.left = Math.random()*100 + '%';
+        el.style.top = (Math.random()*-40) + 'vh';
+        el.style.background = colors[i%colors.length];
+        el.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+        el.style.animationDelay = (Math.random()*0.6) + 's';
+        el.style.width = (8+Math.random()*16) + 'px';
+        el.style.height = (10+Math.random()*22) + 'px';
+        confettiRoot.appendChild(el);
+      }
+    }
+
+    function reveal(){
+      scanned.classList.remove('blur');
+      messageArea.classList.remove('hidden');
+      makeConfetti();
+      /* 💡 修正点3: アニメーション時間に合わせて消去時間を長くする (5秒アニメーションなので6秒に設定) */
+      setTimeout(()=>{ confettiRoot.innerHTML = ''; },6000); 
+    }
+
+    closeBtn.addEventListener('click', ()=>{
+      scanned.classList.add('blur'); 
+      messageArea.classList.add('hidden'); 
+      alert('カードを隠します。');
+      codeInput.focus();
+    });
+
+    revealBtn.addEventListener('click', ()=>{
+      const val = codeInput.value.trim();
+      if(PASSCODE === '' || val === PASSCODE){
+        reveal();
+      } else {
+        alert('Passcodeが違います。もう一度お試しください。');
+        codeInput.value = '';
+        codeInput.focus();
+      }
+    });
+
+    codeInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') revealBtn.click(); });
+  </script>
+</body>
+</html>
