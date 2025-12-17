@@ -4,9 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Card with trick</title>
-
-  <!--ファビコン-->
-<link rel="icon" type="image/svg" href="my-favicon.png">
   
   <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
   
@@ -80,14 +77,16 @@
     footer{margin-top:16px;font-size:0.82rem;color:#666;text-align:right}
 
     @media (max-width:480px){.image-wrap{height:260px}.title{font-size:1.2rem}}
-    
-    /* ★★★画像サイズをここで変更★★★ */
+
+    /* ★★★枠に対する画像サイズを調整★★★ */
     .image-wrap video{
-     width: 85%;
-     height: 110%;
+     width: 100%;
+     height: 100%;
      object-fit: cover;  
      display: block;
     }
+
+ 
   </style>
 </head>
 <body>
@@ -95,21 +94,21 @@
     <div class="card">
       <div class="cover">
         <div>
-          <div class="title">君は自由だ！</div>
-          <div class="subtitle">君が笑えば、世界は君とともに笑う⭐</div>
+          <div class="title">Today is the best!</div>
+          <div class="subtitle">⭐君が笑えば、世界は君とともに笑う⭐</div>
         </div>
       </div>
 
       <div class="image-wrap" id="imageWrap">
         <video id="scanned" class="blur" autoplay loop muted playsinline>
           <!-- ★★★ここを変える★★★ -->
-  <source src="okamoto.mp4" type="video/mp4">
+  <source src="koichi-best.mp4" type="video/mp4">
 </video>
       </div>
 
       
       <div id="messageArea" class="message hidden">
-        <strong>From：</strong> 大浜🎉<br>
+        <strong>From：</strong> aunties🎉<br>
       </div>
 
       <div class="lock-panel">
@@ -117,7 +116,7 @@
         <button class="btn" id="revealBtn">Open！</button>
       </div>
 
-      <div class="help">passcode：メールで4桁の数字をお送りしています。それを半角数字で入れてください。（例）1126</div>
+      <div class="help">passcode：あなたの誕生日を半角数字4桁で入力してください（例）1221</div>
       
       <footer>※passcodeを入力してもケーキやプレゼントは飛び出しません…😊<br>passcodeの有効期限は2週間です。</footer>
       
@@ -131,7 +130,7 @@
   <div class="confetti" id="confetti"></div>
 
   <script>
-    const PASSCODE = '1126'; // 
+    const PASSCODE = 'ko1221'; // 
     
     // ====== LOGIC ======
     const closeBtn = document.getElementById('closeBtn');
