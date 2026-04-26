@@ -1,191 +1,255 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Happy Birthday!</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
 
-  <link rel="icon" type="image/svg" href="my-favicon.png">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
-  
-  <style>
-    :root{--bg:#fff3f8;--card:#ffffff;--accent:#ff69b4;--close-btn:#4CAF50;}
-    
-    html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:linear-gradient(180deg,var(--bg),#fff);display:flex;align-items:center;justify-content:center}
-    .wrap{width:94%;max-width:760px}
-    .card{background:var(--card);border-radius:18px;box-shadow:0 10px 30px rgba(10,10,20,0.08);overflow:hidden;padding:28px}
-    .cover{display:block;text-align:center;} 
-    
-    .title{
-      font-size:1.6rem;
-      font-weight:700;
-      color:var(--accent); 
-      font-family: 'Sawarabi Mincho', serif; 
-    }
-    
-    .subtitle{font-size:0.95rem;color:#666;margin-top:6px}
+<link rel="icon" type="image/svg" href="my-favicon.png">
 
-    .btn-wrap{ 
-      text-align: center;
-      margin-top: 15px; 
-    }
+<style>
+  body {
+    font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    margin: 0;
+    padding: 10px;
+    background: linear-gradient(135deg, #0f172a, #2563eb);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    color: #e5e7eb;
+  }
 
-    .btn{
-      margin: 5px; 
-      color:#fff;
-      border:none;
-      padding:8px 12px; 
-      border-radius:8px; 
-      font-weight:700;
-      cursor:pointer;
-      font-size: 0.9rem; 
-    }
-    
-    #revealBtn{
-        background: var(--accent); 
-    }
+  h1 {
+    font-size: 1.8rem;
+    color: #93c5fd;
+    margin-top: 20px;
+  }
 
-    #closeBtn{
-        background: var(--close-btn); 
-        padding: 5px 10px; 
-        font-size: 0.85rem; 
-    }
+  .small-note {
+    margin-top: 14px;
+    font-size: 0.95rem;
+    text-align: center;
+    width: 90%;
+    max-width: 300px;
+    line-height: 1.6;
+    color: #e0f2fe;
+    font-family: "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+    font-weight: 600;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
 
-    .image-wrap{margin-top:18px;border-radius:12px;overflow:hidden;background:#eee;display:flex;align-items:center;justify-content:center;height:360px}
-    .image-wrap img{max-width:100%;max-height:100%;display:block}
+  .card-container {
+    width: 90%;
+    max-width: 330px;
+    margin-top: 10px;
+    aspect-ratio: 12 / 17; /* ←これ超重要*←高さを確保 */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    position: relative;
+    background: #ffffff;
+  }
 
-    .blur{filter:blur(10px);transition:filter .6s ease}
-    .hidden{display:none}
+  .card-image {
+    width: 100%;
+    display: block;
+     height: auto; /* ←追加 */
+    border-radius: 0 0 12px 12px;
+  }
+  .card-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* ←これが効きます */
+  display: block;
+}
 
-    .lock-panel{margin-top:14px;display:flex;gap:8px;align-items:center}
-    .code{padding:8px;border-radius:8px;border:1px solid #ddd;font-size:0.9rem;} 
-    .help{font-size:0.86rem;color:#888;margin-top:8px}
+  .veil {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+  }
 
-    .message{margin-top:14px;font-size:1.05rem;color:#333}
+  .veil.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
 
-    /* confetti simple */
-    .confetti{pointer-events:none;position:fixed;left:0;top:0;width:100%;height:100%;overflow:hidden;z-index:999}
-    .confetti i{position:absolute;display:block;width:12px;height:18px;opacity:0;transform-origin:center;
-      /* 💡 修正点1: アニメーション時間を長くして、画面下端を超えて落ちるようにする */
-      animation:fall 5s linear forwards} 
-    
-    @keyframes fall{
-      0%{transform:translateY(-20vh) rotate(0) scale(1);opacity:1}
-      /* 💡 修正点2: 終了位置をより下 (200vh) に設定する */
-      100%{transform:translateY(200vh) rotate(720deg) scale(.9);opacity:1}
-    }
+  input[type="password"] {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #94a3b8;
+    font-size: 1.1rem;
+    width: 200px;
+  }
 
-    footer{margin-top:16px;font-size:0.82rem;color:#666;text-align:right}
+  button {
+    margin-top: 12px;
+    padding: 10px 18px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #3b82f6;
+    color: #fff;
+  }
 
-    @media (max-width:480px){.image-wrap{height:260px}.title{font-size:1.2rem}}
+  button:hover {
+    background: #2563eb;
+  }
 
-    /* ★★★枠に対する画像サイズを調整★★★ */
-    .image-wrap video{
-     width: 100%;
-     height: 100%;
-     object-fit: cover;  
-     display: block;
-    }
+  .message, .name, .eng {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 1s ease;
+  }
 
- 
-  </style>
+  .name {
+    margin-top: 18px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #bfdbfe;
+  }
+
+  .eng {
+    margin-top: 6px;
+    font-size: 0.9rem;
+    color: #cbd5f5;
+  }
+
+  .message {
+    margin-top: 10px;
+    font-size: 1rem;
+  }
+
+  .show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nice {
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #93c5fd;
+    text-shadow: 0 0 10px rgba(147,197,253,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s ease;
+  }
+
+  .nice.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <div class="cover">
-        <div>
-          <div class="title">Today is the best!</div>
-          <div class="subtitle">⭐君が笑えば、世界は君とともに笑う⭐</div>
-        </div>
-      </div>
 
-      <div class="image-wrap" id="imageWrap">
-        <video id="scanned" class="blur" autoplay loop muted playsinline>
-          <!-- ★★★ここを変える★★★ -->
-  <source src="koichi-best.mp4" type="video/mp4">
+<h1>Happy Birthday!</h1>
+
+<div class="small-note">
+  ＜良い人生の大原則＞<br>
+  自信なんて なくてもなんとかなる<br>
+  寝れば 朝にはどうでも良くなっている
+</div>
+
+<div id="card" class="card-container">
+  <video class="card-image" autoplay muted loop playsinline>
+  <source src="cyota.mp4" type="video/mp4">
 </video>
+
+  <div id="veil" class="veil">
+    <div style="text-align:center; color:#1e293b;">
+      
+      <div style="font-size:1rem; font-weight:600; margin-bottom:8px;">
+        Please enter your passcode
       </div>
 
-      
-      <div id="messageArea" class="message hidden">
-        <strong>From：</strong> aunties🎉<br>
+      <input type="password" id="pw" placeholder="8桁で入力" />
+      <br />
+
+      <button onclick="revealCard()">Open!</button>
+
+      <div style="font-size:0.85rem; margin-top:10px; color:#334155; line-height:1.5;">
+        passcodeはあなたの生年月日（半角8桁）です<br>
+        入力例：1962年7月20日 ⇒ 19620720<br>
+        passcode有効期限：2週間
       </div>
 
-      <div class="lock-panel">
-        <input id="codeInput" class="code" type="password" placeholder="passcodeを入力" />
-        <button class="btn" id="revealBtn">Open！</button>
-      </div>
-
-      <div class="help">passcode：あなたの誕生日を半角数字4桁で入力してください（例）1221</div>
-      
-      <footer>※passcodeを入力してもケーキやプレゼントは飛び出しません…😊<br>passcodeの有効期限は2週間です。</footer>
-      
-      <div class="btn-wrap">
-        <button class="btn" id="closeBtn">もう一度隠す</button>
-      </div>
-      
     </div>
   </div>
+</div>
 
-  <div class="confetti" id="confetti"></div>
+<div id="name" class="name">長太君へ</div>
+<div class="eng" id="eng">Take it easy. You’re doing just fine.</div>
+<div id="msg" class="message">⭐君が笑えば、世界は君とともに笑う⭐</div>
 
-  <script>
-    //★★★ココにパスコードを入力↓↓↓ 
-    const PASSCODE = '1221'; 
-    
-    // ====== LOGIC ======
-    const closeBtn = document.getElementById('closeBtn');
-    const revealBtn = document.getElementById('revealBtn');
-    const codeInput = document.getElementById('codeInput');
-    const scanned = document.getElementById('scanned');
-    const messageArea = document.getElementById('messageArea');
-    const confettiRoot = document.getElementById('confetti');
+<button id="hideBtn" style="display:none;" onclick="hideCard()">もう一度隠す</button>
 
-    function makeConfetti(){
-      confettiRoot.innerHTML = '';
-      const colors = ['#ff6b6b','#ffd166','#06d6a0','#4d96ff','#c77dff'];
-      for(let i=0;i<28;i++){
-        const el = document.createElement('i');
-        el.style.left = Math.random()*100 + '%';
-        el.style.top = (Math.random()*-40) + 'vh';
-        el.style.background = colors[i%colors.length];
-        el.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
-        el.style.animationDelay = (Math.random()*0.6) + 's';
-        el.style.width = (8+Math.random()*16) + 'px';
-        el.style.height = (10+Math.random()*22) + 'px';
-        confettiRoot.appendChild(el);
-      }
-    }
+<div id="nice" class="nice">Nice!</div>
 
-    function reveal(){
-      scanned.classList.remove('blur');
-      messageArea.classList.remove('hidden');
-      makeConfetti();
-      /* 💡 修正点3: アニメーション時間に合わせて消去時間を長くする (5秒アニメーションなので6秒に設定) */
-      setTimeout(()=>{ confettiRoot.innerHTML = ''; },6000); 
-    }
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<script>
+const CORRECT = "19960428";
 
-    closeBtn.addEventListener('click', ()=>{
-      scanned.classList.add('blur'); 
-      messageArea.classList.add('hidden'); 
-      alert('カードを隠します。');
-      codeInput.focus();
-    });
+document.getElementById("pw").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") revealCard();
+});
 
-    revealBtn.addEventListener('click', ()=>{
-      const val = codeInput.value.trim();
-      if(PASSCODE === '' || val === PASSCODE){
-        reveal();
-      } else {
-        alert('Passcodeが違います。もう一度お試しください。');
-        codeInput.value = '';
-        codeInput.focus();
-      }
-    });
+function revealCard() {
+  const v = document.getElementById("pw").value;
+  if (v !== CORRECT) {
+    alert("Incorrect passcode");
+    return;
+  }
 
-    codeInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') revealBtn.click(); });
-  </script>
+  document.getElementById("veil").classList.add("hidden");
+  document.getElementById("hideBtn").style.display = "block";
+
+  // Nice演出
+  const nice = document.getElementById("nice");
+  nice.classList.add("show");
+  setTimeout(() => nice.classList.remove("show"), 800);
+
+  // 表示アニメーション
+  setTimeout(() => document.getElementById("name").classList.add("show"), 400);
+  setTimeout(() => document.getElementById("eng").classList.add("show"), 700);
+  setTimeout(() => document.getElementById("msg").classList.add("show"), 1000);
+
+  launchConfetti();
+}
+
+function hideCard() {
+  document.getElementById("veil").classList.remove("hidden");
+  document.getElementById("hideBtn").style.display = "none";
+
+  document.getElementById("name").classList.remove("show");
+  document.getElementById("eng").classList.remove("show");
+  document.getElementById("msg").classList.remove("show");
+}
+
+function launchConfetti() {
+  const duration = 2000;
+  const end = Date.now() + duration;
+  (function frame() {
+    confetti({ particleCount: 5, spread: 360 });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+</script>
+
 </body>
 </html>
