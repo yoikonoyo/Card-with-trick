@@ -219,6 +219,12 @@ function revealCard() {
   document.getElementById("veil").classList.add("hidden");
   document.getElementById("hideBtn").style.display = "block";
 
+  // ★ここ追加（スマホで動画を確実に再生）
+  const video = document.querySelector("video");
+  if (video) {
+    video.play().catch(() => {});
+  }
+
   // Nice演出
   const nice = document.getElementById("nice");
   nice.classList.add("show");
